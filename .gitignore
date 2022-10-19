@@ -1,0 +1,17 @@
+# 
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+#
+*.test
+etc/
+
+#
+
+log/
+uploads/
+config.yaml
+tmp/
