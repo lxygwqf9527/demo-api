@@ -20,5 +20,19 @@ func LoadConfigFromToml(filePath string) error {
 // 从环境变量加载配置
 func LoadConfigFromEnv() error {
 	config = NewDefaultConfig()
-	return env.Parse(config)
+	err := env.Parse(config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loadGloabal() (err error) {
+
+	db, err = config.MySQL.getDBConn()
+	if err != nil {
+		return err
+	}
+	return
 }
