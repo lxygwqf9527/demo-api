@@ -2,6 +2,13 @@ package host
 
 import "context"
 
+type Service interface {
+	CreateHost(context.Context, *Host) (*Host, error)
+	QueryHost(context.Context, *QueryHostRequest) (*HostSet, error)
+	UpdateHost(context.Context, *UpdateHostRequest) (*Host, error)
+	DeleteHost(context.Context, *DeleteHostRequest) (*Host, error)
+}
+
 const (
 	PrivateIDC Vendor = iota
 	Tencent
@@ -14,6 +21,13 @@ const (
 type HostSet struct {
 	Items []*Host `json:"items"`
 	Total int     `json:"total"`
+}
+
+func NewHost() *Host {
+	return &Host{
+		Resource: &Resource{},
+		Describe: &Describe{},
+	}
 }
 
 type Host struct {
@@ -49,13 +63,6 @@ type Describe struct {
 	OSType       string `json:"os_type"`                    // 操作系统类型，分为Windows和Linux
 	OSName       string `json:"os_name"`                    // 操作系统名称
 	SerialNumber string `json:"serial_number"`              // 序列号
-}
-
-type Service interface {
-	CreateHost(context.Context, *Host) (*Host, error)
-	QueryHost(context.Context, *QueryHostRequest) (*HostSet, error)
-	UpdateHost(context.Context, *UpdateHostRequest) (*Host, error)
-	DeleteHost(context.Context, *DeleteHostRequest) (*Host, error)
 }
 
 type QueryHostRequest struct {
