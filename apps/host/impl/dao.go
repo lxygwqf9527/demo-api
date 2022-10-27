@@ -13,9 +13,7 @@ func (i *HostServiceImpl) save(ctx context.Context, ins *host.Host) error {
 	)
 
 	// 保存数据
-	fmt.Println(ctx, ins, "AAAAAAAAAAAAAAAAAAA")
 	tx, err := i.db.BeginTx(ctx, nil)
-	fmt.Println(ctx, "AAAAAAAAAAAAAAAAAAA")
 	if err != nil {
 		return fmt.Errorf("start tx error, %s", err)
 	}
@@ -34,7 +32,6 @@ func (i *HostServiceImpl) save(ctx context.Context, ins *host.Host) error {
 			}
 		}
 	}()
-	fmt.Println(ins, "AAAAAAAAAAAAAAAAAAA")
 	// 插入Resource数据
 	rstmt, err := tx.Prepare(InsertResourceSQL)
 	if err != nil {
