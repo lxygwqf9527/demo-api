@@ -1,6 +1,8 @@
 package impl
 
 import (
+	"database/sql"
+
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/lxygwqf9527/demo-api/apps/host"
@@ -20,5 +22,6 @@ func NewHostServiceImp() *HostServiceImpl {
 }
 
 type HostServiceImpl struct {
-	l logger.Logger
+	l  logger.Logger
+	db sql.DB
 }

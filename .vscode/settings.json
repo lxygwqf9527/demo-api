@@ -1,5 +1,5 @@
 {
-    "go.testEnvFile": "",
+    "go.testEnvFile": "etc/unit_test.env",
     "go.testFlags": [
         "-v"
     ]
