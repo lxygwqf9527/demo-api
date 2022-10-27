@@ -6,6 +6,7 @@ import (
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/lxygwqf9527/demo-api/apps/host"
+	"github.com/lxygwqf9527/demo-api/conf"
 )
 
 //
@@ -17,11 +18,12 @@ func NewHostServiceImp() *HostServiceImpl {
 		// 1.Logger全局实例
 		// 2.Logger Level的动态调整，Logrus不支持Level共同调整
 		// 3.加入日志轮转
-		l: zap.L().Named("Host"),
+		l:  zap.L().Named("Host"),
+		db: conf.C().MySQL.GetDB(),
 	}
 }
 
 type HostServiceImpl struct {
 	l  logger.Logger
-	db sql.DB
+	db *sql.DB
 }
