@@ -54,6 +54,10 @@ type App struct {
 	Port string `toml:"port" env:"APP_PORT"`
 }
 
+func (a *App) HttpAddr() string {
+	return fmt.Sprintf("%s:%s", a.Host, a.Port)
+}
+
 func NewDefaultLog() *Log {
 	return &Log{
 		Level:  "info",

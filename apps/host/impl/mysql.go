@@ -12,7 +12,7 @@ import (
 //
 var _ host.Service = (*HostServiceImpl)(nil)
 
-func NewHostServiceImp() *HostServiceImpl {
+func NewHostServiceImpl() *HostServiceImpl {
 	return &HostServiceImpl{
 		// Host service 服务的子Logger
 		// 1.Logger全局实例

@@ -39,5 +39,5 @@ func init() {
 		panic(err)
 	}
 	zap.DevelopmentSetup()
-	service = impl.NewHostServiceImp()
+	service = impl.NewHostServiceImpl()
 }
