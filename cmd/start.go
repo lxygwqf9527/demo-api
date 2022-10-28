@@ -4,7 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxygwqf9527/demo-api/apps"
 	"github.com/lxygwqf9527/demo-api/apps/host/http"
-	"github.com/lxygwqf9527/demo-api/apps/host/impl"
+
+	_ "github.com/lxygwqf9527/demo-api/apps/all"
 	"github.com/lxygwqf9527/demo-api/conf"
 	"github.com/spf13/cobra"
 )
@@ -26,8 +27,7 @@ var StartCmd = &cobra.Command{
 			panic(err)
 		}
 		// 加载Host Service的实体类
-		apps.HostService = impl.NewHostServiceImpl()
-
+		apps.Init()
 		// 通过Host API Handler对外提供HTTP RestFul接口
 		api := http.NewHostHTTPHandler()
 		api.Config()

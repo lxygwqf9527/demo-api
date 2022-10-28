@@ -5,12 +5,13 @@ import (
 
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
+	"github.com/lxygwqf9527/demo-api/apps"
 	"github.com/lxygwqf9527/demo-api/apps/host"
 	"github.com/lxygwqf9527/demo-api/conf"
 )
 
 //
-var _ host.Service = (*HostServiceImpl)(nil)
+var impl = &HostServiceImpl{}
 
 func NewHostServiceImpl() *HostServiceImpl {
 	return &HostServiceImpl{
@@ -26,4 +27,20 @@ func NewHostServiceImpl() *HostServiceImpl {
 type HostServiceImpl struct {
 	l  logger.Logger
 	db *sql.DB
+}
+
+// 只需要保证 全局对象Config和全局Logger已经加载完成
+func (i *HostServiceImpl) Config() {
+	i.l = zap.L().Named("Host")
+	i.db = conf.C().MySQL.GetDB()
+}
+
+func (i *HostServiceImpl) Name() string {
+	return host.AppName
+}
+
+// _ import app 自动注册逻辑
+func init() {
+	apps.Registry(impl)
+
 }
