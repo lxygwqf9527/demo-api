@@ -5,6 +5,8 @@ import (
 	"github.com/lxygwqf9527/demo-api/apps/host"
 )
 
+// 面向接口，真正Service的实现，在服务实例化的时候传递进来
+// 也就是(CLI) Start的时候
 func NewHostHTTPHandler(svc host.Service) *Handler {
 	return &Handler{
 		svc: svc,

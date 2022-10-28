@@ -1,7 +1,6 @@
 package host
 
 import (
-	"context"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -10,13 +9,6 @@ import (
 var (
 	validate = validator.New()
 )
-
-type Service interface {
-	CreateHost(context.Context, *Host) (*Host, error)
-	QueryHost(context.Context, *QueryHostRequest) (*HostSet, error)
-	UpdateHost(context.Context, *UpdateHostRequest) (*Host, error)
-	DeleteHost(context.Context, *DeleteHostRequest) (*Host, error)
-}
 
 const (
 	PrivateIDC Vendor = iota
@@ -47,6 +39,7 @@ type Host struct {
 func (h *Host) Validate() error {
 	return validate.Struct(h)
 }
+
 func (h *Host) InjectDefault() {
 	if h.CreateAt == 0 {
 		h.CreateAt = time.Now().UnixMilli()

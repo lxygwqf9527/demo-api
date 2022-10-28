@@ -8,6 +8,7 @@ import (
 
 // 用于暴露Host Service接口
 func (h *Handler) createHost(c *gin.Context) {
+	// 对外的api接口
 	ins := host.NewHost()
 	if err := c.Bind(ins); err != nil {
 		response.Failed(c.Writer, err)
