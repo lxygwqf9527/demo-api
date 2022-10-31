@@ -41,6 +41,6 @@ func (i *HostServiceImpl) Name() string {
 
 // _ import app 自动注册逻辑
 func init() {
-	apps.Registry(impl)
+	apps.RegistryImpl(impl)
 
 }

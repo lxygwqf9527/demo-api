@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxygwqf9527/demo-api/apps"
-	"github.com/lxygwqf9527/demo-api/apps/host/http"
 
 	_ "github.com/lxygwqf9527/demo-api/apps/all"
 	"github.com/lxygwqf9527/demo-api/conf"
@@ -27,13 +26,12 @@ var StartCmd = &cobra.Command{
 			panic(err)
 		}
 		// 加载Host Service的实体类
-		apps.Init()
-		// 通过Host API Handler对外提供HTTP RestFul接口
-		api := http.NewHostHTTPHandler()
-		api.Config()
+		apps.InitImpl()
 
+		// 提供一个Gin Router
 		g := gin.Default()
-		api.Registry(g)
+		// 注册 IOC的所有http handler
+		apps.InitGin(g)
 
 		return g.Run(conf.C().App.HttpAddr())
 	},
