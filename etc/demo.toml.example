@@ -12,7 +12,14 @@ password = "xxxx"
 database = "demo"
 
 [log]
-level = "debug"
+// 解析日志Level配置
+// DebugLevel: "debug",
+// InfoLevel:  "info",
+// WarnLevel:  "warning",
+// ErrorLevel: "error",
+// FatalLevel: "fatal",
+// PanicLevel: "panic",
+level = "info"
 dir = "logs"
 format = "text"
 to = "stdout"
