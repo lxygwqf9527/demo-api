@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	// 使用Interface{} + 断言进行抽象
 	HostService host.Service
 
 	implApps = map[string]ImplService{}
@@ -23,6 +24,16 @@ func RegistryImpl(svc ImplService) {
 	if v, ok := svc.(host.Service); ok {
 		HostService = v
 	}
+}
+
+// Get Impl实例：implApps
+func GetImpl(name string) interface{} {
+	for k, v := range implApps {
+		if k == name {
+			return v
+		}
+	}
+	return nil
 }
 
 func RegistryGin(svc GinService) {

@@ -22,10 +22,8 @@ func (h *Handler) Registry(r gin.IRouter) {
 }
 
 func (h *Handler) Config() {
-	if apps.HostService == nil {
-		panic("dependence host service required")
-	}
-	h.svc = apps.HostService
+	// 从IOC里面获取HostService的实例对象
+	h.svc = apps.GetImpl(host.AppName).(host.Service)
 }
 
 func (h *Handler) Name() string {
