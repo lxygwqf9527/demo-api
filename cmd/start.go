@@ -2,10 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/gin-gonic/gin"
+	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/lxygwqf9527/demo-api/apps"
+	"github.com/lxygwqf9527/demo-api/protocol"
 
 	_ "github.com/lxygwqf9527/demo-api/apps/all"
 	"github.com/lxygwqf9527/demo-api/conf"
@@ -18,34 +22,6 @@ var (
 	confETCD string
 )
 
-// 1.
-var StartCmd = &cobra.Command{
-	Use:   "start",
-	Short: "启动 demo 后端API",
-	Long:  "启动 demo 后端API",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		err := conf.LoadConfigFromToml(confFile)
-		if err != nil {
-			panic(err)
-		}
-
-		// 初始化全局日志Logger
-		if err := loadGlobalLogger(); err != nil {
-			return err
-		}
-		// 加载Host Service的实体类
-		apps.InitImpl()
-
-		// 提供一个Gin Router
-		g := gin.Default()
-		// 注册 IOC的所有http handler
-		apps.InitGin(g)
-
-		return g.Run(conf.C().App.HttpAddr())
-	},
-}
-
-// log 为全局变量, 只需要load 即可全局可用户, 依赖全局配置先初始化
 func loadGlobalLogger() error {
 	var (
 		logInitMsg string
@@ -98,7 +74,70 @@ func loadGlobalLogger() error {
 	return nil
 }
 
+// 1.
+var StartCmd = &cobra.Command{
+	Use:   "start",
+	Short: "启动 demo 后端API",
+	Long:  "启动 demo 后端API",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		err := conf.LoadConfigFromToml(confFile)
+		if err != nil {
+			panic(err)
+		}
+
+		// 初始化全局日志Logger
+		if err := loadGlobalLogger(); err != nil {
+			return err
+		}
+		// 加载Host Service的实体类
+		apps.InitImpl()
+
+		svc := newManager()
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
+		go svc.WaitStop(ch)
+		return svc.Start()
+	},
+}
+
+// log 为全局变量, 只需要load 即可全局可用户, 依赖全局配置先初始化
+
 func init() {
 	StartCmd.PersistentFlags().StringVarP(&confFile, "config", "f", "etc/demo.toml", "demo api 配置文件路径")
 	RootCmd.AddCommand(StartCmd)
+}
+
+// 用于管理所有需要启动的服务
+type manager struct {
+	http *protocol.HttpService
+	l    logger.Logger
+}
+
+func newManager() *manager {
+	return &manager{
+		http: protocol.NewHttpService(),
+		l:    zap.L().Named("CLI"),
+	}
+}
+
+func (m *manager) Start() error {
+	return m.http.Start()
+}
+
+// 处理来自外部的中断信号，比如Terminal
+func (m *manager) WaitStop(ch <-chan os.Signal) {
+	for v := range ch {
+		switch v {
+
+		default:
+			m.l.Infof("received signal %s", v)
+			m.http.Stop()
+		}
+	}
+
+}
+
+// 处理来自外部的中断信号，比如Terminal
+func (m *manager) Stop() {
+
 }
