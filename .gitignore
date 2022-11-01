@@ -9,8 +9,9 @@
 *.test
 etc/demo.toml
 etc/*.env
-#
 
+#
+build/
 log/
 uploads/
 config.yaml
