@@ -21,3 +21,15 @@ func (h *Handler) createHost(c *gin.Context) {
 	}
 	response.Success(c.Writer, ins)
 }
+
+//
+
+func (h *Handler) queryHost(c *gin.Context) {
+	// 从http请求的query string中获取参数
+	req := host.NewQueryHostFromHttp(c.Request)
+	set, err := h.svc.QueryHost(c.Request.Context(), req)
+	if err != nil {
+		response.Failed(c.Writer, err)
+	}
+	response.Success(c.Writer, set)
+}

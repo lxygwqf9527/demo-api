@@ -1,6 +1,8 @@
 package host
 
 import (
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -19,9 +21,19 @@ const (
 	Azure
 )
 
+func NewHostSet() *HostSet {
+	return &HostSet{
+		Items: []*Host{},
+	}
+}
+
 type HostSet struct {
 	Items []*Host `json:"items"`
 	Total int     `json:"total"`
+}
+
+func (s *HostSet) Add(item *Host) {
+	s.Items = append(s.Items, item)
 }
 
 func NewHost() *Host {
@@ -76,9 +88,44 @@ type Describe struct {
 	SerialNumber string `json:"serial_number"`              // 序列号
 }
 
+func NewQueryHostFromHttp(r *http.Request) *QueryHostRequest {
+	req := NewQueryHostRequest()
+	// 获取query string
+	qs := r.URL.Query()
+	pss := qs.Get("page_size")
+	if pss != "" {
+		req.PageSize, _ = strconv.Atoi(pss)
+	}
+
+	pns := qs.Get("page_number")
+	if pns != "" {
+		req.PageNumber, _ = strconv.Atoi(pns)
+	}
+
+	req.Keywords = qs.Get("kws")
+
+	return req
+}
+
+func NewQueryHostRequest() *QueryHostRequest {
+	return &QueryHostRequest{
+		PageSize:   20,
+		PageNumber: 1,
+	}
+}
+
 type QueryHostRequest struct {
-	PageSize   uint64 `json:"page_size,omitempty"`
-	PageNumber uint64 `json:"page_number,omitempty"`
+	PageSize   int    `json:"page_size,omitempty"`
+	PageNumber int    `json:"page_number,omitempty"`
+	Keywords   string `json:"kws`
+}
+
+func (req *QueryHostRequest) GetPageSize() uint {
+	return uint(req.PageSize)
+}
+
+func (req *QueryHostRequest) OffSet() int64 {
+	return int64((req.PageNumber - 1) * req.PageSize)
 }
 
 type UpdateHostRequest struct {

@@ -26,4 +26,11 @@ const (
 		VALUES
 			( ?,?,?,?,?,?,?,? );
 		`
+	QueryHostSQL = `
+		SELECT
+			r.*, h.cpu, h.memory, h.gpu_spec, h.gpu_amount, h.os_type, h.os_name, h.serial_number
+		FROM
+			resource AS r
+			LEFT JOIN host AS h ON r.id = h.resource_id
+	`
 )

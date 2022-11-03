@@ -33,6 +33,18 @@ func TestCreat(t *testing.T) {
 
 }
 
+func TestQuery(t *testing.T) {
+	should := assert.New(t)
+	req := host.NewQueryHostRequest()
+	req.Keywords = "接口测试"
+	set, err := service.QueryHost(context.Background(), req)
+	if should.NoError(err) {
+		for i := range set.Items {
+			fmt.Println(set.Items[i].Id)
+		}
+	}
+}
+
 func init() {
 	err := conf.LoadConfigFromEnv()
 	if err != nil {
