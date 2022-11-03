@@ -54,6 +54,16 @@ func TestDescribe(t *testing.T) {
 	}
 }
 
+func TestUpdate(t *testing.T) {
+	should := assert.New(t)
+	req := host.NewPatchUpdateHostRequest("ins-09")
+	req.Name = "更新测试01"
+	ins, err := service.UpdateHost(context.Background(), req)
+	if should.NoError(err) {
+		fmt.Println(ins.Id)
+	}
+}
+
 func init() {
 	err := conf.LoadConfigFromEnv()
 	if err != nil {

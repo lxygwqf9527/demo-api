@@ -1,6 +1,7 @@
 package host
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -46,6 +47,28 @@ func NewHost() *Host {
 type Host struct {
 	*Resource
 	*Describe
+}
+
+// 对象全量更新
+func (h *Host) Put(obj *Host) error {
+	if obj.Id != h.Id {
+		return fmt.Errorf("id not equal")
+	}
+	*h.Resource = *obj.Resource
+	*h.Describe = *obj.Describe
+
+	return nil
+}
+
+// 对象局部更新
+func (h *Host) Patch(obj *Host) error {
+	if obj.Name != "" {
+		h.Name = obj.Name
+	}
+	if obj.CPU != 0 {
+		h.CPU = obj.CPU
+	}
+	return nil
 }
 
 func (h *Host) Validate() error {
@@ -137,8 +160,37 @@ func NewDescribeHostRequestWithId(id string) *DescribeHostRequest {
 type DescribeHostRequest struct {
 	Id string
 }
+
+type UPDATE_MODE string
+
+const (
+	// 全量更新
+	UPDATE_MODE_PUT UPDATE_MODE = "PUT"
+	// 局部更新
+	UPDATE_MODE_PATCH UPDATE_MODE = "PATCH"
+)
+
+func NewPutUpdateHostRequest(id string) *UpdateHostRequest {
+	h := NewHost()
+	h.Id = id
+	return &UpdateHostRequest{
+		UpdateMode: UPDATE_MODE_PUT,
+		Host:       h,
+	}
+}
+
+func NewPatchUpdateHostRequest(id string) *UpdateHostRequest {
+	h := NewHost()
+	h.Id = id
+	return &UpdateHostRequest{
+		UpdateMode: UPDATE_MODE_PATCH,
+		Host:       h,
+	}
+}
+
 type UpdateHostRequest struct {
-	*Describe
+	UpdateMode UPDATE_MODE `json:"update_mode"`
+	*Host
 }
 
 type DeleteHostRequest struct {

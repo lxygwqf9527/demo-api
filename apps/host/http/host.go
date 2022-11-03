@@ -44,3 +44,35 @@ func (h *Handler) describeHost(c *gin.Context) {
 	}
 	response.Success(c.Writer, set)
 }
+
+func (h *Handler) putUpdateHost(c *gin.Context) {
+	req := host.NewPutUpdateHostRequest(c.Param("id"))
+	// 解析Body里面的数据
+	if err := c.Bind(req.Host); err != nil {
+		response.Failed(c.Writer, err)
+		return
+	}
+	req.Id = c.Param("id")
+	set, err := h.svc.UpdateHost(c.Request.Context(), req)
+	if err != nil {
+		response.Failed(c.Writer, err)
+		return
+	}
+	response.Success(c.Writer, set)
+}
+
+func (h *Handler) patchUpdateHost(c *gin.Context) {
+	req := host.NewPatchUpdateHostRequest(c.Param("id"))
+	// 解析Body里面的数据
+	if err := c.Bind(req.Host); err != nil {
+		response.Failed(c.Writer, err)
+		return
+	}
+	req.Id = c.Param("id")
+	set, err := h.svc.UpdateHost(c.Request.Context(), req)
+	if err != nil {
+		response.Failed(c.Writer, err)
+		return
+	}
+	response.Success(c.Writer, set)
+}

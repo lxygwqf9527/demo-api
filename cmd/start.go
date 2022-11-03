@@ -94,6 +94,9 @@ var StartCmd = &cobra.Command{
 
 		svc := newManager()
 		ch := make(chan os.Signal, 1)
+		// channel是一种复合数据结构，可以当成一个容器
+		defer close(ch)
+
 		signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
 		go svc.WaitStop(ch)
 		return svc.Start()
@@ -134,7 +137,6 @@ func (m *manager) WaitStop(ch <-chan os.Signal) {
 			m.http.Stop()
 		}
 	}
-
 }
 
 // 处理来自外部的中断信号，比如Terminal
