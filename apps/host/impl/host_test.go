@@ -45,6 +45,15 @@ func TestQuery(t *testing.T) {
 	}
 }
 
+func TestDescribe(t *testing.T) {
+	should := assert.New(t)
+	req := host.NewDescribeHostRequestWithId("ins-09")
+	ins, err := service.DescribeHost(context.Background(), req)
+	if should.NoError(err) {
+		fmt.Println(ins.Id)
+	}
+}
+
 func init() {
 	err := conf.LoadConfigFromEnv()
 	if err != nil {

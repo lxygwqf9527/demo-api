@@ -33,3 +33,14 @@ func (h *Handler) queryHost(c *gin.Context) {
 	}
 	response.Success(c.Writer, set)
 }
+
+func (h *Handler) describeHost(c *gin.Context) {
+	// 从http请求的query string中获取参数
+	req := host.NewDescribeHostRequestWithId(c.Param("id"))
+
+	set, err := h.svc.DescribeHost(c.Request.Context(), req)
+	if err != nil {
+		response.Failed(c.Writer, err)
+	}
+	response.Success(c.Writer, set)
+}

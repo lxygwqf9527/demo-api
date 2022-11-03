@@ -19,7 +19,8 @@ type Handler struct {
 
 func (h *Handler) Registry(r gin.IRouter) {
 	r.POST("/hosts", h.createHost)
-	r.GET("hosts", handler.queryHost)
+	r.GET("/hosts", handler.queryHost)
+	r.GET("/hosts/:id", handler.describeHost)
 }
 
 func (h *Handler) Config() {
