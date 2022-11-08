@@ -56,8 +56,23 @@ func TestDescribe(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	should := assert.New(t)
-	req := host.NewPatchUpdateHostRequest("ins-09")
+	req := host.NewPutUpdateHostRequest("ins-09")
 	req.Name = "更新测试01"
+	req.Region = "rg 02"
+	req.Type = "small"
+	req.CPU = 1
+	req.Memory = 2048
+	req.Description = "嘻嘻"
+	ins, err := service.UpdateHost(context.Background(), req)
+	if should.NoError(err) {
+		fmt.Println(ins.Id)
+	}
+}
+
+func TestPatch(t *testing.T) {
+	should := assert.New(t)
+	req := host.NewPatchUpdateHostRequest("ins-09")
+	req.Name = "更新测试05"
 	ins, err := service.UpdateHost(context.Background(), req)
 	if should.NoError(err) {
 		fmt.Println(ins.Id)

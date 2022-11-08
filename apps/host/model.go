@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/imdario/mergo"
 )
 
 var (
@@ -62,12 +63,16 @@ func (h *Host) Put(obj *Host) error {
 
 // 对象局部更新
 func (h *Host) Patch(obj *Host) error {
-	if obj.Name != "" {
-		h.Name = obj.Name
-	}
-	if obj.CPU != 0 {
-		h.CPU = obj.CPU
-	}
+	// 垃圾写法
+	// if obj.Name != "" {
+	// 	h.Name = obj.Name
+	// }
+	// if obj.CPU != 0 {
+	// 	h.CPU = obj.CPU
+	// }
+
+	// 优雅写法
+	mergo.MergeWithOverwrite(h, obj)
 	return nil
 }
 
